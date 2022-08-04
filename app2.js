@@ -1,36 +1,37 @@
-function Torta(gramos, cobertura) {
-    this.gramos = gramos
-    this.cobertura = cobertura
-    this.precio = (Number(gramos) * 5) + precioCobertura(cobertura)
-}
-
-function otraTorta() {
-    let flag = ""
-    while (flag != "si" && flag != "no") {
-        flag = prompt("Su torta supera los 2kg, tiene la posibilidad de que sea realizada en varios pisos por un costo adicional de $500. Si así lo desea coloque 'Si', de lo contrario coloque 'No'")
-        if (flag != "si" && flag != "no") {
-            alert("ERROR: ingrese 'Si' o 'No'")
+// constructor de torta
+function Torta() {
+    this.gramos
+    this.cobertura
+    this.precio
+    // determina los gramos de la torta según la cantidad de personas, rechaza valores negativos o NaN
+    this.calcularGramos = () => {
+        let personas = 0
+        while (Math.sign(personas) != 1) {
+            personas = Number(prompt("Ingrese la cantidad de personas para determinar el tamaño de la torta"))
+            if (Math.sign(personas) != 1) {
+                alert("ERROR: ingrese un valor numérico válido")
+            }
         }
+        this.gramos = personas * 100
     }
-    if (flag == "si") {
-        let torta2 = new Torta(gramosDeTorta(), elegirCobertura())
-        carrito.push(torta2)
-    } else {
-        return
-    }
-}
-
-function gramosDeTorta() {
-    let personas = 0
-    while (Math.sign(personas) != 1) {
-        personas = Number(prompt("Ingrese la cantidad de personas para determinar el tamaño de la torta"))
-        if (Math.sign(personas) != 1) {
-            alert("ERROR: ingrese un valor numérico válido")
+    // permite al usuario elegir la cobertura, rechaza valores distintos de 1, 2 o 3
+    this.elegirCobertura = () => {
+        let cob
+        while (!(cob >= 1 && cob <= 3 && Number.isInteger(cob))) {
+            cob = Number(prompt("Elija su cobertura. Coloque '1' si desea crema chantilly ($100), '2' para buttercream ($200) y '3' para fondant ($300)"))
+            if (!(cob >= 1 && cob <= 3 && Number.isInteger(cob))) {
+                alert("ERROR: ingrese 1, 2 o 3")
+            }
         }
+        this.cobertura = cob
     }
-    return personas * 100
+    // calcula el precio de la torta según los gramos y la cobertura
+    this.calcularPrecio = () => {
+        this.precio = this.gramos * 5 + precioCobertura(this.cobertura)
+    }
 }
 
+// determina el precio según la cobertura elegida
 function precioCobertura(cobertura) {
     switch (cobertura) {
         case 1:
@@ -42,29 +43,22 @@ function precioCobertura(cobertura) {
     }
 }
 
-function elegirCobertura() {
-    let cobertura = 0
-    while (cobertura != 1 && cobertura != 2 && cobertura != 3) {
-        cobertura = Number(prompt("Elija su cobertura. Coloque '1' si desea crema chantilly ($100), '2' para buttercream ($200) y '3' para fondant ($300)"))
-        if (cobertura != 1 && cobertura != 2 && cobertura != 3) {
-            alert("ERROR: ingrese 1, 2 o 3")
-        }
-    }
-    return cobertura
-}
-
+// construye la torta, calcula gramos, elige la cobertura, calcula el precio y la pushea al carrito
 function hacerTorta() {
-    let torta1 = new Torta(gramosDeTorta(), elegirCobertura())
+    let torta1 = new Torta()
+    torta1.calcularGramos()
+    torta1.elegirCobertura()
+    torta1.calcularPrecio()
     carrito.push(torta1)
 }
-
-
 
 let carrito = []
 
 let flag = true
 while (flag == true) {
+    // se construye la torta, hace los calculos y la pushea al carrito
     hacerTorta()
+    // pregunta al usuario si quiere agregar otra torta, rechaza entradas distintas a 'si' o 'no'
     while (flag != "si" && flag != "no") {
         flag = prompt("Si desea agregar otra torta ingrese 'Si', de lo contrario ingrese 'No' para ver el precio de su carrito.")
         if (flag != "si" && flag != "no") {
@@ -77,6 +71,8 @@ while (flag == true) {
 }
 console.log(carrito);
 
+// se suman los precios de las tortas del carrito
 let precioTotal = carrito.reduce((acc, el) => acc + el.precio, 0)
 
+// se muestra al cliente el precio total
 alert("El precio total de su carrito es $" + precioTotal)
