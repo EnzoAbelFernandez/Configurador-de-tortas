@@ -1,5 +1,6 @@
 // constructor de torta
-function Torta() {
+function Torta(id) {
+    this.id = id
     this.gramos
     this.cobertura
     this.precio
@@ -43,21 +44,28 @@ function precioCobertura(cobertura) {
     }
 }
 
+
 // construye la torta, calcula gramos, elige la cobertura, calcula el precio y la pushea al carrito
-function hacerTorta() {
-    let torta1 = new Torta()
+function hacerTorta(id) {
+    
+    let torta1 = new Torta(id)
     torta1.calcularGramos()
     torta1.elegirCobertura()
     torta1.calcularPrecio()
     carrito.push(torta1)
+    
+
 }
 
 let carrito = []
 
 let flag = true
+let numeroDeTorta = 1
 while (flag == true) {
     // se construye la torta, hace los calculos y la pushea al carrito
-    hacerTorta()
+    hacerTorta(numeroDeTorta)
+    numeroDeTorta++
+    console.log(numeroDeTorta);
     // pregunta al usuario si quiere agregar otra torta, rechaza entradas distintas a 'si' o 'no'
     while (flag != "si" && flag != "no") {
         flag = prompt("Si desea agregar otra torta ingrese 'Si', de lo contrario ingrese 'No' para ver el precio de su carrito.")
@@ -75,4 +83,34 @@ console.log(carrito);
 let precioTotal = carrito.reduce((acc, el) => acc + el.precio, 0)
 
 // se muestra al cliente el precio total
-alert("El precio total de su carrito es $" + precioTotal)
+//alert("El precio total de su carrito es $" + precioTotal)
+
+function coberturaDisplay(cob) {
+    if (cob==1) {
+        return "Crema Chantilly"
+    } else if (cob==2) {
+        return "Buttercream"
+    } else {
+        return "Fondant"
+    }
+}
+let container = document.getElementById("container")
+carrito.forEach((producto) => {
+    let div = document.createElement("div")
+    div.innerHTML = `<h5>Torta ${producto.id}</h6>
+                    <p>Peso: ${producto.gramos} gramos</p>
+                    <p>Cobertura: ${coberturaDisplay(producto.cobertura)}</p>
+                    <p>Precio: $${producto.precio}</p>
+                    <hr>`
+
+    container.append(div)
+})
+let h3 = document.createElement("h3")
+h3.innerHTML = `<h3>Total: $${precioTotal}</h3>`
+container.append(h3)
+
+let financiacion = document.getElementById("finan")
+console.log(financiacion);
+if (precioTotal>50000) {
+    financiacion.className = "show ms-2"
+}

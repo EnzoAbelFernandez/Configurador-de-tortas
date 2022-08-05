@@ -1,0 +1,9 @@
+body {
+    background-color: pink;
+}
+.hidden {
+    display: none;
+}
+.show {
+    display: block;
+}
